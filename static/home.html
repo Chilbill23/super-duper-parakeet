@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Home Page</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<div class="container">
+		<h1>YouTube Video Downloader</h1>
+		<form action="{{ url_for('convert') }}" method="post">
+			<label for="url">YouTube Video URL:</label>
+			<input type="text" name="url" id="url" required>
+			<br>
+			<label for="format">Choose Format:</label>
+			<select name="format" id="format">
+				<option value="mp4">MP4</option>
+				<option value="mp3">MP3</option>
+			</select>
+			<br>
+			<input type="submit" value="Download">
+		</form>
+	     {% if message %}
+<div class="alert alert-success">{{ message }}</div>
+{% endif %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/eruda/2.11.2/eruda.min.js" integrity="sha512-DE5UJYX6ODvgt968di1S48Qbxxp4CBGVkhujdos5eqP462qUpepKcghVbE26AfBZ4QRN8np2SoiJ2nwqc7tDZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>  eruda.init({
+        tool: ['console', 'elements', 
+            'network',
+            'resources',
+            'info',
+            'sources']
+    });
+    eruda.get().config.set('displaySize', 80); 
+    
+   eruda.get().config.set('active-eruda', true);
+	</script>
+</body>
+</html>
+

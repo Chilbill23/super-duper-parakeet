@@ -1,0 +1,20 @@
+{
+  "name": "Your App Name",
+  "short_name": "App Name",
+  "description": "Your app description",
+  "icons": [
+    {
+      "src": "https://hurr-durr.cc/images/dog.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#fff",
+  "theme_color": "#0072c6",
+  "permissions": {
+    "geolocation": true
+  }
+}
+

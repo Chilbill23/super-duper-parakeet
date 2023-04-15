@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Download File</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <style>
+    /* Overlay */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+    }
+
+    /* Message Box */
+    #message-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Download File</h1>
+  <a id="download-link" href="/download/{{ filename }}" download>Download {{ filename }}</a>
+
+
+  <!-- Overlay and Message Box -->
+  <div id="overlay">
+    <div id="message-box">
+      <p>File is being deleted. You will be redirected shortly.</p>
+    </div>
+  </div>
+
+  <script>
+    // Get the download link element
+var downloadLink = document.getElementById('download-link');
+
+// When the download link is clicked
+downloadLink.addEventListener('click', function(event) {
+  // Prevent the default link behavior
+  event.preventDefault();
+
+  // Show the overlay
+  $("#overlay").show();
+
+  // Send an AJAX request to the server to download the file
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/download/' + "{{ filename }}");
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  xhr.responseType = 'blob';
+
+  // Wait for the response from the server
+  xhr.onload = function() {
+    // Hide the overlay
+    $("#overlay").hide();
+
+    // Check if the response was successful
+    if (xhr.status === 200) {
+      // Create a new link element
+      var downloadLink = document.createElement('a');
+      downloadLink.href = window.URL.createObjectURL(xhr.response);
+      downloadLink.download = "{{ filename }}";
+
+      // Trigger a click event on the link to initiate the download
+      downloadLink.click();
+
+      // Send an AJAX request to the server to delete the file
+      var deleteXHR = new XMLHttpRequest();
+      deleteXHR.open('GET', '/delete/' + "{{ filename }}");
+      deleteXHR.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+      deleteXHR.send();
+
+      // Wait for the response from the server
+      deleteXHR.onload = function() {
+        // Parse the JSON response
+        var response = JSON.parse(deleteXHR.responseText);
+
+        // Check if the file was deleted
+        if (!response.deleted) {
+          // Show the error message in the message box
+          $("#message-box").html("<p>Error deleting file: " + response.error + "</p>");
+        }
+      }
+    } else {
+      // Show the error message in the message box
+      $("#message-box").html("<p>Error downloading file: " + xhr.statusText + "</p>");
+    }
+  };
+
+  // Send the request to download the file
+  xhr.send();
+});
+
+  </script>
+</body>
+</html>
